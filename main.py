@@ -5,16 +5,16 @@ from core.state import GameState
 
 def praise_input(text: str) -> Point | str | None:
     """解析玩家输入的指令或坐标
-    
+
     支持的命令：
         - "pass"   : 跳过当前回合
         - "resign" : 认输
         - "regret" : 悔棋
         - 坐标格式 : 如 "3,4" 或 "(3,4)" 或 "3，4"（支持中文逗号）
-    
+
     Args:
         text: 玩家输入的原始字符串
-    
+
     Returns:
         - 如果识别为命令，返回对应的命令字符串
         - 如果识别为坐标，返回 Point 对象
@@ -36,12 +36,12 @@ def praise_input(text: str) -> Point | str | None:
 
 def print_board(game: GameState) -> None:
     """在控制台打印当前棋盘状态
-    
+
     用数字表示棋子：
         - 0 : 空位
         - 1 : 黑子
         - 2 : 白子
-    
+
     Args:
         game: 当前游戏状态
     """
@@ -58,10 +58,10 @@ def print_board(game: GameState) -> None:
                 row.append("2")
         print(row)
 
-    
+
 def main() -> None:
     """游戏主循环
-    
+
     流程：
         1. 初始化游戏状态
         2. 进入循环，每轮提示当前玩家输入
@@ -72,38 +72,40 @@ def main() -> None:
     """
     game = GameState()
     print("五子棋游戏开始！")
-    print("请输入坐标 (row col) 来下棋，输入 'pass' 跳过，输入 'resign' 认输，输入 'regret' 悔棋。")
+    print(
+        "请输入坐标 (row col) 来下棋，输入 'pass' 跳过，输入 'resign' 认输，输入 'regret' 悔棋。"
+    )
     while not game.game_over:
         print(f"当前玩家: {game.current_player.name}")
         inp = input("> ").strip()
         if not inp:
-            continue                        # 空输入，重新提示
-        
+            continue  # 空输入，重新提示
+
         result = praise_input(inp)
-        if result == "pass":                # 停一手
+        if result == "pass":  # 停一手
             game.pass_move()
             print(f"{game.current_player.opponent.name} 选择了跳过。")
-        elif result == "resign":            # 认输
+        elif result == "resign":  # 认输
             game.resign()
             print(f"{game.current_player.name} 选择了认输。")
-        elif result == "regret":            # 悔棋
+        elif result == "regret":  # 悔棋
             game.regret_move()
             print("悔棋成功。")
-        elif isinstance(result, Point):     # 落子
+        elif isinstance(result, Point):  # 落子
             if game.play(result):
                 print(f"{game.current_player.opponent.name} 在 {result} 下了一子。")
             else:
                 print("非法的落子，请重新输入。")
-                continue                    # 重新输入
+                continue  # 重新输入
         else:
             print("无法识别的输入，请重新输入。")
-            continue                        # 重新输入
-    
-        print_board(game)                   # 打印棋盘
+            continue  # 重新输入
+
+        print_board(game)  # 打印棋盘
         if game.game_over and game.winner is not None:
             print(f"{game.winner.name} 获胜！")
         print()
-        
+
     print("游戏结束！")
 
 
